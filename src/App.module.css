@@ -1,0 +1,21 @@
+body {
+  background-color: black;
+}
+
+section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+canvas {
+  /* background-color: darkgray; */
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+button {
+  z-index: 10;
+}
