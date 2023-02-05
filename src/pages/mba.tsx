@@ -1,12 +1,33 @@
 import { Component, createSignal } from "solid-js";
-import { Routes, Route } from "@solidjs/router";
-import styles from "./App.module.css";
-import tune from "./tune.mp3";
-import { Mba } from "./pages/mba";
+import styles from "../App.module.css";
+import tune from "../tune.mp3";
 
-const App: Component = () => {
+export const Mba: Component = () => {
+  const resolution = {
+    h: 1000,
+    w: 1000,
+  };
   const [chunks, setChunks] = createSignal<Blob[]>([]);
   createSignal<MediaElementAudioSourceNode>();
+
+  const colors = [
+    {
+      stroke: "rgb(233, 84, 28)",
+      fill: "rgb(107,2,3)",
+    },
+    {
+      stroke: "white",
+      fill: "rgb(100, 165, 102)",
+    },
+    {
+      stroke: "rgb(227, 189, 16)",
+      fill: "rgb(114, 198, 209)",
+    },
+    {
+      stroke: "rgb(163, 19, 24)",
+      fill: "rgb(22, 11, 96)",
+    },
+  ];
 
   function play() {
     const audio1: HTMLAudioElement | null = document.getElementById(
@@ -66,43 +87,22 @@ const App: Component = () => {
           ctx?.clearRect(0, 0, canvasWidth || 0, canvasHeight || 0);
           analyser.getByteFrequencyData(dataArray);
 
-          for (
-            let i = 0;
-            i < bufferLength - Math.round(bufferLength * 0.15);
-            i++
-          ) {
-            let barWidth = dataArray[i];
-
-            ctx.strokeStyle = "red";
-
+          for (let i in colors) {
+            const circleSizeRatio = 1.7 - i / colors.length;
+            ctx.lineWidth = 100;
+            ctx.strokeStyle = colors[i].stroke;
             ctx?.beginPath();
-
-            ctx?.roundRect(
-              visualiserWidth - barWidth - 2,
-              y,
-              barWidth,
-              barHeight / 2,
-              [barHeight / 2, 0, 0, barHeight / 2]
-            );
-
-            ctx?.stroke();
-
-            ctx.fillStyle = "green";
-
-            ctx?.fill();
-
-            ctx?.closePath();
-
-            ctx.fillStyle = "white";
-
-            ctx?.fillRect(
-              visualiserWidth - 4,
+            ctx?.arc(
+              resolution.w / 2,
+              resolution.h / 2,
+              dataArray[i * 10] * circleSizeRatio,
               0,
-              4,
-              (audio1?.currentTime / audio1?.duration) * canvas?.height
+              2 * Math.PI
             );
-
-            y += barHeight;
+            ctx.fillStyle = colors[i].fill;
+            ctx?.stroke();
+            ctx?.fill();
+            ctx?.closePath();
           }
           requestAnimationFrame(animate);
         }
@@ -130,28 +130,32 @@ const App: Component = () => {
     }, 0);
   }
 
-  const resulution = {
-    h: 1920,
-    w: 1080,
-  };
+  function pause() {
+    const audio1: HTMLAudioElement | null = document.getElementById(
+      "audio"
+    ) as HTMLAudioElement;
+
+    if (audio1) {
+      audio1.pause();
+    }
+  }
 
   return (
-    <Routes>
-      <div class={styles.App}>
-        <header class={styles.header}></header>
-        <section>
-          <button onclick={play}>Play</button>
-          <canvas
-            id="canvas"
-            height={resulution.h}
-            width={resulution.w}
-          ></canvas>
-          <video src={tune} id="audio" onended={downloadRecordedCanvas}></video>
-        </section>
-      </div>
-      <Route path="/mba" component={Mba} />
-    </Routes>
+    <div
+    // style={{ "background-color": "green" }}
+    >
+      <header class={styles.header}></header>
+      <section>
+        <button onclick={play}>Play</button>
+        <button onclick={pause}>Pause</button>
+        <canvas
+          //   style={{ "background-color": "green" }}
+          id="canvas"
+          height={resolution.h}
+          width={resolution.w}
+        ></canvas>
+        <audio src={tune} id="audio" onended={downloadRecordedCanvas}></audio>
+      </section>
+    </div>
   );
 };
-
-export default App;

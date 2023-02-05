@@ -10,10 +10,10 @@ section {
 }
 
 canvas {
-  /* background-color: darkgray; */
   position: absolute;
   top: 0;
   left: 0;
+  scale: 50%;
 }
 
 button {

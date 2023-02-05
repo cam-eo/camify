@@ -1,10 +1,8 @@
 import { Component, createSignal } from "solid-js";
-import { Routes, Route } from "@solidjs/router";
-import styles from "./App.module.css";
-import tune from "./tune.mp3";
-import { Mba } from "./pages/mba";
+import styles from "../App.module.css";
+import tune from "../tune.mp3";
 
-const App: Component = () => {
+export const Mba: Component = () => {
   const [chunks, setChunks] = createSignal<Blob[]>([]);
   createSignal<MediaElementAudioSourceNode>();
 
@@ -136,22 +134,13 @@ const App: Component = () => {
   };
 
   return (
-    <Routes>
-      <div class={styles.App}>
-        <header class={styles.header}></header>
-        <section>
-          <button onclick={play}>Play</button>
-          <canvas
-            id="canvas"
-            height={resulution.h}
-            width={resulution.w}
-          ></canvas>
-          <video src={tune} id="audio" onended={downloadRecordedCanvas}></video>
-        </section>
-      </div>
-      <Route path="/mba" component={Mba} />
-    </Routes>
+    <div class={styles.App}>
+      <header class={styles.header}></header>
+      <section>
+        <button onclick={play}>Play</button>
+        <canvas id="canvas" height={resulution.h} width={resulution.w}></canvas>
+        <video src={tune} id="audio" onended={downloadRecordedCanvas}></video>
+      </section>
+    </div>
   );
 };
-
-export default App;
