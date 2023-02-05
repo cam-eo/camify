@@ -75,9 +75,7 @@ export const Mba: Component = () => {
 
       if (canvas) {
         const ctx = canvas.getContext("2d");
-
         const canvasWidth = canvas?.width || 0;
-        const visualiserWidth = canvasWidth / 2;
         const canvasHeight = canvas?.height || 0;
 
         const barHeight = canvas.height / bufferLength;
@@ -87,7 +85,22 @@ export const Mba: Component = () => {
           ctx?.clearRect(0, 0, canvasWidth || 0, canvasHeight || 0);
           analyser.getByteFrequencyData(dataArray);
 
+          for (let n in colors) {
+            // draw squares
+            ctx.beginPath();
+            const decrementSquareSize = 100 * n
+            const endingX = resolution.w - (decrementSquareSize * 2)
+            const endingY = resolution.h - (decrementSquareSize * 2)
+            ctx?.rect(decrementSquareSize, decrementSquareSize, endingX, endingY);
+            ctx.fillStyle = colors[n].fill
+            ctx?.fill();
+            ctx?.closePath();
+          }
+
           for (let i in colors) {
+
+
+
             const circleSizeRatio = 1.7 - i / colors.length;
             ctx.lineWidth = 100;
             ctx.strokeStyle = colors[i].stroke;
